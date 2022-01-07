@@ -102,7 +102,7 @@ public final class ReciprocalArraySum {
          */
         private double value = 0;
 
-        static int SEQ_THRESHOLD = 200000000;
+        static int SEQ_THRESHOLD = 200000001;
 
         /**
          * Constructor.
@@ -136,7 +136,7 @@ public final class ReciprocalArraySum {
                     this.value += 1 / input[i];
                 }
                 final long t2 = System.currentTimeMillis();
-                System.out.println(String.format("Thread %s, Chunck size=%d, time=%d", Thread.currentThread().getName(), endIndexExclusive - startIndexInclusive, t2-t1));
+                System.out.println(String.format("Thread %s, low=%d, high=%d, time=%d", Thread.currentThread().getName(), startIndexInclusive, endIndexExclusive, t2-t1));
         } else{
                 ReciprocalArraySumTask s1 = new ReciprocalArraySumTask(startIndexInclusive, (startIndexInclusive + endIndexExclusive) / 2, input);
                 ReciprocalArraySumTask s2 = new ReciprocalArraySumTask((startIndexInclusive + endIndexExclusive) / 2, endIndexExclusive, input);
@@ -238,10 +238,23 @@ public final class ReciprocalArraySum {
         }
         */
 
+        /*
         for (int i = 0; i < concurentTask; i++) {
             final long start = System.currentTimeMillis();
             int low = getChunkStartInclusive(i, concurentTask, input.length);
             int high = getChunkEndExclusive(i, concurentTask, input.length);
+
+            ReciprocalArraySumTask task1 = new ReciprocalArraySumTask(low, high, input);
+            pool.invoke(task1);
+            final long end = System.currentTimeMillis();
+            System.out.println(String.format("Thread=%s, Task %d, low=%d, high=%d, time created=%d, %s", Thread.currentThread().getName(), i, low, high, end - start, pool.toString()));
+        }
+        */
+
+        for (int i = 1; i < 13; i++) {
+            final long start = System.currentTimeMillis();
+            int low = 0;
+            int high = (input.length + i - 1) / i;
 
             ReciprocalArraySumTask task1 = new ReciprocalArraySumTask(low, high, input);
             pool.invoke(task1);
